@@ -1,0 +1,19 @@
+# Registers one Host plugin: a real POSIX Git Bash tool.
+#
+# Why this exists instead of using the shipped @deepseek-ai/dsh-tool-bash:
+#   dsh-tool-bash composes its POSIX shell executor only off Windows. On
+#   Windows the "bash" tool therefore falls back to the platform shell
+#   (Windows PowerShell 5.1), which is not bash at all and whose non-ASCII
+#   output is corrupted (see README.md for the measured evidence).
+#
+# This bundle supplies its own tool that always executes Git Bash directly,
+# decodes stdout/stderr as UTF-8, and never routes a command line through
+# PowerShell.
+- insert:
+    - id: gitbash-tool
+      name: '@local/dsh-gitbash-tool'
+      config:
+        # Optional: absolute path to bash.exe. Omit it entirely to let the
+        # plugin probe the standard Git for Windows, Scoop, and PATH locations
+        # (verified: probing succeeds unaided on a normal Windows install).
+        # bashPath: C:/Program Files/Git/bin/bash.exe

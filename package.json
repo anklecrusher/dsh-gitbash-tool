@@ -1,0 +1,16 @@
+{
+  "name": "@local/dsh-gitbash-tool",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Real POSIX Git Bash tool for the DeepSeek Harness on Windows, with UTF-8-correct output.",
+  "main": "./entry.js",
+  "exports": {
+    ".": "./entry.js"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
