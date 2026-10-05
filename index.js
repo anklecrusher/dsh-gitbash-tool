@@ -129,6 +129,13 @@ function collector(stream) {
  * grandchild keeps running, which was measured here as a script printing its
  * post-deadline output. This waits (briefly, bounded) for taskkill to settle
  * before the direct kill.
+ *
+ * `windowsHide` is not cosmetic here. The desktop app is a GUI process with no
+ * console of its own, so Windows allocates a fresh console — a visible black
+ * window — for every console-subsystem child it spawns, and `taskkill` is one.
+ * Without the flag the window flashes on screen each time a command is
+ * cancelled or times out. The main bash spawn below already sets it; this one
+ * was missed, so the two paths disagreed.
  * @param child - the spawned child process.
  */
 async function killTree(child) {
@@ -142,7 +149,10 @@ async function killTree(child) {
         resolve()
       }
       try {
-        const killer = spawn('taskkill', ['/pid', String(child.pid), '/T', '/F'], { stdio: 'ignore' })
+        const killer = spawn('taskkill', ['/pid', String(child.pid), '/T', '/F'], {
+          stdio: 'ignore',
+          windowsHide: true,
+        })
         killer.on('error', finish)
         killer.on('close', finish)
         setTimeout(finish, 2000)
